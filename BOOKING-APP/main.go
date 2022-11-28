@@ -1,49 +1,53 @@
 package main
 
-import (
-	fmt "fmt"
-	"strings"
-)
+import "fmt"
+
+const cantidaddeUsuariosDisponibles uint = 50
+
+var appName = "Nombres de usuario para STTDR."
+var UsuariosqueQuedan uint = 50
+var bookings = make([]UserData, 1)
+var nombresdeUsuarios []string
+
+type UserData struct {
+	FirstName        string
+	LastName         string
+	Email            string
+	NumbersOfTickets uint
+}
 
 func main() {
-	var appName = "Nombres de usuario para STTDR."
-	const cantidaddeUsuariosDisponibles uint = 50
-	var usuariosqueQuedan int = 50
-	var bookings []string
 
-	greetUsers(appName, cantidaddeUsuariosDisponibles, usuariosqueQuedan)
+	greetUsers()
 
 	for {
-		var userName1 string
-		var userName2 string
-		var email string
-		var usuarios int
+		var FirstName string
+		var LastName string
+		var Email string
+		var NumbersOfTickets uint
 		var nombresdeUsuarios string
 		// Solicita nombre de usuario al usuario
-		printUserName1(bookings)
+		// printUserName1(bookings)
 		fmt.Println("tipea tu primer nombre")
-		fmt.Scan(&userName1)
+		fmt.Scan(&FirstName)
 		fmt.Println("tipea tu apellido")
-		fmt.Scan(&userName2)
+		fmt.Scan(&LastName)
 		fmt.Println("tipea tu email")
-		fmt.Scan(&email)
+		fmt.Scan(&Email)
 		fmt.Println("Cuantos usuarios reservas?")
-		fmt.Scan(&usuarios)
+		fmt.Scan(&NumbersOfTickets)
 		fmt.Println("Ingresa tu nombre de usuario a reservar")
 		fmt.Scan(&nombresdeUsuarios)
 
-		isValidName, isValidEmail, isValidUsuarios, isValidNombresdeUsuarios := validateUserInput(userName1, userName2, email, usuarios, nombresdeUsuarios, usuariosqueQuedan)
+		var isValidName, isValidEmail, isValidUsuarios, isValidNombresdeUsuarios = ValidateUserInput(FirstName, LastName, Email, NumbersOfTickets, nombresdeUsuarios, UsuariosqueQuedan)
 
 		if isValidName && isValidEmail && isValidUsuarios && isValidNombresdeUsuarios {
-			usuariosqueQuedan = usuariosqueQuedan - usuarios
-			bookings = append(bookings, userName1+" "+userName2)
-			fmt.Printf("Gracias %v %v por reservar %v Nombres de usuario.\nEl primero es %v. Te llagara un correo de confirmacion a %v\n", userName1, userName2, usuarios, nombresdeUsuarios, email)
-			fmt.Printf("Solo quedan %v nombres de usuario en %v,. Gracias!\n", usuariosqueQuedan, appName)
+			//bookUserName(UsuariosqueQuedan, NumbersOfTickets, bookings, FirstName, Lastname, Email, appName)
 			// Call a function print userName1
-			printUserName1(bookings)
+			//printUserName1(bookings)
 
-			fmt.Printf("These are all the bookings: %v\n", userName1)
-			if usuariosqueQuedan == 0 {
+			fmt.Printf("These are all the bookings: %v\n", FirstName)
+			if UsuariosqueQuedan == 0 {
 				// Finalizar programa
 				fmt.Println("Se acabaron los nombres de usuario, reinicia el programa")
 				break
@@ -68,29 +72,45 @@ func main() {
 	}
 }
 
-func greetUsers(appName string, cantidaddeUsuariosDisponibles uint, usuariosqueQuedan int) {
+func greetUsers() {
 	fmt.Printf("Los usuarios son %T, los que quedan son %T, el nombre de esta app es %T\n", cantidaddeUsuariosDisponibles, cantidaddeUsuariosDisponibles, appName)
 	fmt.Printf("Bienvenido a la app de reserva de %v\n", appName)
-	fmt.Printf("Tenemos un total de %v usuarios disponibles, y van quedando solo %v libres.\n", cantidaddeUsuariosDisponibles, usuariosqueQuedan)
+	fmt.Printf("Tenemos un total de %v usuarios disponibles, y van quedando solo %v libres.\n", cantidaddeUsuariosDisponibles, UsuariosqueQuedan)
 	fmt.Printf("Bienvenido a la reserva de %v", appName)
 	fmt.Println("Reserva tu nombre de usuario aqui.")
 }
 
 func printUserName1(bookings []string) []string {
-	var userName1 []string
+	var FirstName []string
 	for _, booking := range bookings {
-		var names = strings.Fields(booking)
-		userName1 = append(userName1, names[0])
+		FirstName = append(FirstName, booking)
 	}
-	return userName1
+	return FirstName
 }
 
-func validateUserInput(userName1 string, userName2 string, email string, usuarios int, nombresdeUsuarios string, usuariosqueQuedan int) (bool, bool, bool, bool) {
-	isValidName := len(userName1) >= 3 && len(userName2) >= 3
-	isValidEmail := strings.Contains(email, "@")
-	isValidUsuarios := usuarios > 0 && usuarios <= usuariosqueQuedan
-	isValidNombresdeUsuarios := len(nombresdeUsuarios) >= 5
-	return isValidName, isValidEmail, isValidUsuarios, isValidNombresdeUsuarios
-	//tipo := "Usuario publico" OR "Usuario privado"
-	//isValidType := tipo == "Usuario publico" || tipo == "Usuario privado"
+func bookUserName(bookings []string, FirstName string, Lastname string, Email string, appName string, UsuariosqueQuedan uint, NumbersOfTickets uint) {
+	UsuariosqueQuedan = UsuariosqueQuedan - NumbersOfTickets
+
+	// Create a map for a user
+	var userData = UserData{
+		FirstName:         FirstName,
+		LastName:          Lastname,
+		Email:             Email,
+		UsuariosqueQuedan: UsuariosqueQuedan,
+	}
+	bookings = append(bookings, userData)
+	fmt.Printf("Gracias %v %v por reservar %v Nombres de usuario.\nEl primero es %v. Te llagara un correo de confirmacion a %v\n", FirstName, Lastname, NumbersOfTickets, nombresdeUsuarios, Email)
+	fmt.Printf("Solo quedan %v nombres de usuario en %v,. Gracias!\n", UsuariosqueQuedan, appName)
+}
+
+func sendTicket(NumbersOfTickets uint, FirstName string, Lastname string, Email string) {
+	var ticket, _ = fmt.Printf(
+		"Sending %v v% v% tickests\n",
+		NumbersOfTickets,
+		FirstName,
+		Lastname,
+	)
+	fmt.Println()
+	fmt.Printf("Sending tickets:\n %v to email address %v\n", ticket, Email)
+	fmt.Println()
 }
